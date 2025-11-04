@@ -22,18 +22,4 @@ public class WeatherController {
         return weatherService.getWeather(city);
     }
 
-    @GetMapping("/endpoint-error/{city}")
-    public String invalidEndpoint(@PathVariable String city) {
-        return weatherService.getWeatherInvalidEndpoint(city);
-    }
-
-    @GetMapping("/delay/{city}")
-    public String delay(@PathVariable String city) {
-        return weatherService.getWeatherWithDelay(city);
-    }
-
-    @GetMapping("/api-key-error/{city}")
-    public String invalidApiKey(@PathVariable String city) {
-        return weatherService.getWeatherInvalidApiKey(city);
-    }
 }
