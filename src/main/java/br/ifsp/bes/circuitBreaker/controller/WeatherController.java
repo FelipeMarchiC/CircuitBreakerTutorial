@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 
 @RestController
 @RequestMapping("/weather")
@@ -18,7 +20,7 @@ public class WeatherController {
     }
 
     @GetMapping("/ok/{city}")
-    public String normal(@PathVariable String city) {
+    public CompletableFuture<String> normal(@PathVariable String city) {
         return weatherService.getWeather(city);
     }
 
