@@ -7,7 +7,7 @@ spring:
 
 weather:
   api:
-    key: set yours
+    key: ${WEATHER_API_KEY:default-key-if-missing}
 
 resilience4j:
   circuitbreaker:
@@ -15,9 +15,9 @@ resilience4j:
       weatherApi:
         sliding-window-size: 5                                    # Número de chamadas monitoradas
         failure-rate-threshold: 50                                # Porcentagem de falhas que abre o circuito
-        wait-duration-in-open-state: 5s                           # Tempo de espera antes  de reabrir
-        permitted-number-of-calls-in-half-open-state: 3          # Número de chamadas permitidas no estado meio-aberto
-        automatic-transition-from-open-to-half-open-enabled: true # Transição automática de estado aberto p/ meio-aberto
+        wait-duration-in-open-state: 5s                           # Tempo de espera antes de reabrir
+        permitted-number-of-calls-in-half-open-state: 3           # Número de chamadas permitidas no estado meio-aberto
+        automatic-transition-from-open-to-half-open-enabled: true # Transição automática de estado aberto para meio-aberto
   timelimiter:
     instances:
       weatherApi:

@@ -31,6 +31,7 @@ public class WeatherService {
     public CompletableFuture<String> getWeather(String city) {
         return CompletableFuture.supplyAsync(() -> {
             String url = String.format("https://api.weatherapi.com/v1/current.json?key=%s&q=%s&aqi=no", apiKey, city);
+
             try (Jedis jedis = JedisPool.getResource()) {
                 var response = restTemplate.getForObject(url, String.class);
                 jedis.setex(city,300, response);
@@ -42,15 +43,16 @@ public class WeatherService {
         });
 
     }
+
     public CompletableFuture<String> fallbackWeather(String city, Throwable t)
     {
         return CompletableFuture.supplyAsync(() -> {
             String cached;
             try (Jedis jedis = JedisPool.getResource()) {
                 cached = jedis.get(city);
-                return  "motivo da chamada do fallback: "+t.getMessage() +"\nresultado do cache no fallback: \n" + cached;
+                return  "Motivo da chamada do fallback: " + t.getMessage() +"\nresultado do cache no fallback: \n" + cached;
             } catch (Exception e) {
-                return "não foi possível recuperar o cache: \n" + e.getMessage() ;
+                return "Não foi possível recuperar o cache: \n" + e.getMessage() ;
             }
 
         });

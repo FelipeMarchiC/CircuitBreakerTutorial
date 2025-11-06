@@ -1,5 +1,6 @@
 package br.ifsp.bes.circuitBreaker;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -20,11 +21,11 @@ public class CircuitBreakerApplication {
     public RestTemplate restTemplate() { return new RestTemplate(); }
 
     @Bean
-    public JedisPool jedisPool()
-    {
+    public JedisPool jedisPool(
+            @Value("${REDIS_HOST:localhost}") String host,
+            @Value("${REDIS_PORT:6379}") int port) {
         JedisPoolConfig poolConfig = new JedisPoolConfig();
         poolConfig.setJmxEnabled(false);
-
-        return new JedisPool(poolConfig,"localhost", 6379);
+        return new JedisPool(poolConfig, host, port);
     }
 }
