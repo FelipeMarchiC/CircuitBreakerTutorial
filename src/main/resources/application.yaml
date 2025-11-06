@@ -16,13 +16,22 @@ resilience4j:
         sliding-window-size: 5                                    # Número de chamadas monitoradas
         failure-rate-threshold: 50                                # Porcentagem de falhas que abre o circuito
         wait-duration-in-open-state: 5s                           # Tempo de espera antes  de reabrir
-        permitted-number-of-calls-in-half-open-state: 2           # Número de chamadas permitidas no estado meio-aberto
+        permitted-number-of-calls-in-half-open-state: 3          # Número de chamadas permitidas no estado meio-aberto
         automatic-transition-from-open-to-half-open-enabled: true # Transição automática de estado aberto p/ meio-aberto
   timelimiter:
     instances:
       weatherApi:
         timeout-duration:
-          seconds: 5
+          seconds: 10
+  retry:
+    instances:
+      weatherApi:
+        max-attempts: 3
+        wait-duration:
+          seconds: 1
+        retry-exceptions:
+          - java.lang.RuntimeException
+
 
 logging:
   level:
