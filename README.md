@@ -27,6 +27,10 @@ A aplicação consome a API pública do [WeatherAPI](https://www.weatherapi.com/
 ---
 
 ### 2️⃣ Configurar a variável de ambiente
+No .env do projeto, coloque o valor da sua API Key real na variavel WEATHER_API_KEY.
+
+OU
+
 No terminal, defina a variável `WEATHER_API_KEY` (substitua `<SUA_CHAVE>` pela sua API Key real):
 
 #### 🪟 Windows (PowerShell)
