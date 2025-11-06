@@ -26,7 +26,7 @@ resilience4j:
   retry:
     instances:
       weatherApi:
-        max-attempts: 3
+        max-attempts: 2
         wait-duration:
           seconds: 1
         retry-exceptions:
@@ -36,3 +36,16 @@ resilience4j:
 logging:
   level:
     io.github.resilience4j.circuitbreaker: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    circuitbreakers:
+      enabled: true
+  health:
+    circuitbreakers:
+      enabled: true
