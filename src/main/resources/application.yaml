@@ -24,13 +24,21 @@ resilience4j:
         wait-duration-in-open-state: 5s                           # Tempo de espera antes de reabrir
         permitted-number-of-calls-in-half-open-state: 3           # Número de chamadas permitidas no estado meio-aberto
         automatic-transition-from-open-to-half-open-enabled: true
-
+      userService:
+        slidingWindowSize: 4
+        minimumNumberOfCalls: 4
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true
   timelimiter:
     instances:
       weatherApiTimeout:
         timeout-duration: 5s
         cancel-running-future: on
-
+      userService:
+        timeout-duration:
+          seconds: 1
 logging:
   level:
     io.github.resilience4j.circuitbreaker: DEBUG
