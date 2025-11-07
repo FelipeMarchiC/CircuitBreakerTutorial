@@ -24,4 +24,9 @@ public class WeatherController {
         return weatherService.getWeather(city);
     }
 
+    @GetMapping("/timeout/{city}")
+    public CompletableFuture<String> timeoutCity(@PathVariable String city) {
+        return weatherService.getWeatherTimeout(city);
+    }
+
 }

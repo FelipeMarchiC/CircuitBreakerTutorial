@@ -1,7 +1,6 @@
 package br.ifsp.bes.circuitBreaker.service;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +15,7 @@ public class WeatherService {
 
     private final RestTemplate restTemplate;
     private final JedisPool JedisPool;
+    private int Timeout = 1000;
 
     @Value("${weather.api.key}")
     private String apiKey;
@@ -25,9 +25,7 @@ public class WeatherService {
         this.JedisPool = jedisPool;
     }
 
-    @TimeLimiter(name = "weatherApi")
     @CircuitBreaker(name = "weatherApi", fallbackMethod = "fallbackWeather")
-    @Retry(name = "weatherApi")
     public CompletableFuture<String> getWeather(String city) {
         return CompletableFuture.supplyAsync(() -> {
             String url = String.format("https://api.weatherapi.com/v1/current.json?key=%s&q=%s&aqi=no", apiKey, city);
@@ -43,9 +41,27 @@ public class WeatherService {
         });
 
     }
+    @TimeLimiter(name = "weatherApiTimeout")
+    @CircuitBreaker(name = "weatherApiTimeout", fallbackMethod = "fallbackWeather")
+    public CompletableFuture<String> getWeatherTimeout(String city) {
+        return CompletableFuture.supplyAsync(()->{
+            String cached;
+            try(Jedis  jedis = JedisPool.getResource()) {
+                String url = String.format("https://api.weatherapi.com/v1/current.json?key=%s&q=%s&aqi=no", apiKey, city);
+                Thread.sleep(Timeout);
+                Timeout = Timeout * 2;
+                String response = restTemplate.getForObject(url, String.class);
+                jedis.setex("city",300,response);
+                return response;
+            }catch(Exception e){
+                throw new RuntimeException(e.getMessage());
+            }
+        });
+    }
 
     public CompletableFuture<String> fallbackWeather(String city, Throwable t)
     {
+        Timeout= 1000;
         return CompletableFuture.supplyAsync(() -> {
             String cached;
             try (Jedis jedis = JedisPool.getResource()) {
