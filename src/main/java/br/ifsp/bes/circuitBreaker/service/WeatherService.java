@@ -59,20 +59,19 @@ public class WeatherService {
         });
     }
 
-    public CompletableFuture<String> fallbackWeather(String city, Throwable t)
-    {
-        Timeout= 10;
+    public CompletableFuture<String> fallbackWeather(String city, Throwable t) {
+        Timeout = 125;
         return CompletableFuture.supplyAsync(() -> {
-            String cached;
             try (Jedis jedis = JedisPool.getResource()) {
-                cached = jedis.get(city);
-                return  "Motivo da chamada do fallback: " + t.getMessage() +"\nresultado do cache no fallback: \n" + cached;
+                String cached = jedis.get(city);
+                return "⚠ Fallback ativado!\n" +
+                        "Motivo: " + t.getMessage() + "\n" +
+                        "Cache disponível:\n" + cached;
             } catch (Exception e) {
-                return "Não foi possível recuperar o cache: \n" + e.getMessage() ;
+                return "⚠ Fallback ativado, mas sem cache disponível.\nErro: " + e.getMessage();
             }
-
         });
-
     }
+
 }
 

@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.concurrent.CompletableFuture;
 
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/weather")
 public class WeatherController {
@@ -20,13 +24,20 @@ public class WeatherController {
     }
 
     @GetMapping("/ok/{city}")
-    public CompletableFuture<String> normal(@PathVariable String city) {
-        return weatherService.getWeather(city);
+    public CompletableFuture<ResponseEntity<String>> normal(@PathVariable String city) {
+        return weatherService.getWeather(city)
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> ResponseEntity
+                        .status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .body("Erro no serviço weather: " + ex.getMessage()));
     }
 
     @GetMapping("/timeout/{city}")
-    public CompletableFuture<String> timeoutCity(@PathVariable String city) {
-        return weatherService.getWeatherTimeout(city);
+    public CompletableFuture<ResponseEntity<String>> timeoutCity(@PathVariable String city) {
+        return weatherService.getWeatherTimeout(city)
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> ResponseEntity
+                        .status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .body("Timeout ou circuito aberto: " + ex.getMessage()));
     }
-
 }

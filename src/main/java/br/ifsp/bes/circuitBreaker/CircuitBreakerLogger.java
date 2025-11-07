@@ -13,6 +13,8 @@ public class CircuitBreakerLogger {
     @PostConstruct
     public void init(){
         var circuitBreaker= circuitBreakerRegistry.circuitBreaker("weatherApi");
+        var circuitBreakerTimeout = circuitBreakerRegistry.circuitBreaker("weatherApiTimeout");
         circuitBreaker.getEventPublisher().onStateTransition(e-> System.out.println("circuit breaker mudou de estado para: " + circuitBreaker.getState())).onEvent(e-> System.out.println("CircuitBreaker state: " + circuitBreaker.getState()));
+        circuitBreakerTimeout.getEventPublisher().onStateTransition(e-> System.out.println("circuit breaker mudou de estado para: " + circuitBreaker.getState())).onEvent(e-> System.out.println("CircuitBreaker state: " + circuitBreaker.getState()));
     }
 }
