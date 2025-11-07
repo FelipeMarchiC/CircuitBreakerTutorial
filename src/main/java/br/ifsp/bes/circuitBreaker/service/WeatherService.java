@@ -61,7 +61,7 @@ public class WeatherService {
 
     public CompletableFuture<String> fallbackWeather(String city, Throwable t)
     {
-        Timeout= 1000;
+        Timeout= 10;
         return CompletableFuture.supplyAsync(() -> {
             String cached;
             try (Jedis jedis = JedisPool.getResource()) {
