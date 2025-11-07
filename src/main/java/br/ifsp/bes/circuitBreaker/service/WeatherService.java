@@ -51,7 +51,7 @@ public class WeatherService {
                 Thread.sleep(Timeout);
                 Timeout = Timeout * 2;
                 String response = restTemplate.getForObject(url, String.class);
-                jedis.setex("city",300,response);
+                jedis.setex(city,300,response);
                 return response;
             }catch(Exception e){
                 throw new RuntimeException(e.getMessage());
